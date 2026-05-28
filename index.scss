@@ -16,6 +16,10 @@ $EXPECTED_LIMIT: 5 !default; // Cap the number of values shown in error messages
 $EXPECTED_SEPARATOR: ' | ' !default;
 $EXPECTED_MORE_LABEL: 'more' !default;
 
+// Result key — not used internally; exposed so consumers can import it from
+// the same module they already use for e.path() / e.received() / e.expected().
+$ERROR: 'error' !default;
+
 // PUBLIC API ──────────────────────────────────────────────────────────────────
 
 /// Builds a formatted path string from path segments for use in error messages
@@ -61,7 +65,8 @@ $EXPECTED_MORE_LABEL: 'more' !default;
     } @else {
       @return $value;
     }
-  } @else if ($type == 'list' or $type == 'arglist') and list.length($value) > 0 {
+  } @else if ($type == 'list' or $type == 'arglist') and list.length($value) > 0
+  {
     @return '(#{meta.inspect($value)})';
   } @else {
     @return meta.inspect($value);

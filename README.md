@@ -44,14 +44,15 @@ All constants are configurable via `@use ... with (...)`:
 );
 ```
 
-| Variable               | Default  | Description                                |
-| ---------------------- | -------- | ------------------------------------------ |
-| `$PATH_PREFIX`         | `' @ '`  | Prefix before the path string              |
-| `$PATH_SEPARATOR`      | `' > '`  | Separator between path segments            |
-| `$PATH_ID_PLACEHOLDER` | `'<id>'` | Placeholder when the key itself is invalid |
-| `$EXPECTED_LIMIT`      | `5`      | Max values shown before truncating         |
-| `$EXPECTED_SEPARATOR`  | `' \| '` | Separator between values                   |
-| `$EXPECTED_MORE_LABEL` | `'more'` | Label for the remaining count              |
+| Variable               | Default   | Description                                |
+| ---------------------- | --------- | ------------------------------------------ |
+| `$ERROR`               | `'error'` | Shared error key for consumer result maps  |
+| `$PATH_PREFIX`         | `' @ '`   | Prefix before the path string              |
+| `$PATH_SEPARATOR`      | `' > '`   | Separator between path segments            |
+| `$PATH_ID_PLACEHOLDER` | `'<id>'`  | Placeholder when the key itself is invalid |
+| `$EXPECTED_LIMIT`      | `5`       | Max values shown before truncating         |
+| `$EXPECTED_SEPARATOR`  | `' \| '`  | Separator between values                   |
+| `$EXPECTED_MORE_LABEL` | `'more'`  | Label for the remaining count              |
 
 ---
 
