@@ -10,12 +10,12 @@
     "validation",
     "utilities"
   ],
-  "homepage": "https://github.com/nicholasgillespie/sass-error#readme",
+  "homepage": "https://github.com/nikogillespie/sass-error#readme",
   "license": "MIT",
-  "author": "Nicholas Gillespie (https://github.com/nicholasgillespie)",
+  "author": "Niko Gillespie (https://github.com/nikogillespie)",
   "funding": {
     "type": "github",
-    "url": "https://github.com/sponsors/nicholasgillespie"
+    "url": "https://github.com/sponsors/nikogillespie"
   },
   "files": [
     "index.scss",
@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nicholasgillespie/sass-error.git"
+    "url": "git+https://github.com/nikogillespie/sass-error.git"
   },
   "peerDependencies": {
     "sass-funcs": ">=1.0.0",
