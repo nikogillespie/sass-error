@@ -4,7 +4,7 @@
 @use 'sass-funcs/list' as l;
 @use 'sass-funcs/string' as s;
 
-// CONFIG ──────────────────────────────────────────────────────────────────────
+// CONFIG ──────────────────────────────────────────────────
 
 // Path formatting
 $PATH_PREFIX: ' @ ' !default;
@@ -12,17 +12,17 @@ $PATH_SEPARATOR: ' > ' !default;
 $PATH_ID_PLACEHOLDER: '<id>' !default;
 
 // Expected formatting
-$EXPECTED_LIMIT: 5 !default; // Cap the number of values shown in error messages
+$EXPECTED_LIMIT: 5 !default; // Cap values shown in error messages
 $EXPECTED_SEPARATOR: ' | ' !default;
 $EXPECTED_MORE_LABEL: 'more' !default;
 
-// PUBLIC API ──────────────────────────────────────────────────────────────────
+// PUBLIC API ──────────────────────────────────────────────
 
-/// Builds a formatted path string from path segments for use in error messages
-/// @param {List | String} $path - Path segments, or a single value normalised to a list
-/// @param {Bool} $is-id-error [false] - Replaces the last segment with `<id>` when true
+/// Build a formatted path string from $path for error messages
+/// @param {List | String} $path - Path segments; a single value is normalized to a list
+/// @param {Bool} $is-id-error [false] - Replace the last segment with `<id>` when true
 /// @param {String} $separator [$PATH_SEPARATOR] - Separator placed between path segments
-/// @return {String} Path string prefixed with `$PATH_PREFIX`, or `''` if path is empty
+/// @return {String} Path string prefixed with `$PATH_PREFIX`, or `''` if $path is empty
 @function path($path, $is-id-error: false, $separator: $PATH_SEPARATOR) {
   @if m.type-of($is-id-error) != 'bool' {
     @error '$is-id-error: #{meta.inspect($is-id-error)} is not a bool.';
@@ -30,6 +30,7 @@ $EXPECTED_MORE_LABEL: 'more' !default;
     @error '$separator: #{meta.inspect($separator)} is not a string.';
   }
 
+  // Normalize to list
   @if not m.is-type($path, ('list', 'arglist')) {
     $path: l.push((), $path);
   }
@@ -48,9 +49,9 @@ $EXPECTED_MORE_LABEL: 'more' !default;
   }
 }
 
-/// Renders a received value as a string for use in error messages
+/// Render $value as a string for error messages
 /// @param {*} $value - Value to render
-/// @param {Bool} $quote-empty [false] - Wraps empty or whitespace-only strings in double quotes when true
+/// @param {Bool} $quote-empty [false] - Quote empty or whitespace-only strings when true
 /// @return {String} Strings returned as-is, non-empty lists wrapped in parens, all others inspected
 @function received($value, $quote-empty: false) {
   $type: m.type-of($value);
@@ -61,15 +62,16 @@ $EXPECTED_MORE_LABEL: 'more' !default;
     } @else {
       @return $value;
     }
-  } @else if ($type == 'list' or $type == 'arglist') and list.length($value) > 0 {
+  } @else if m.is-type($value, ('list', 'arglist')) and list.length($value) > 0
+  {
     @return '(#{meta.inspect($value)})';
   } @else {
     @return meta.inspect($value);
   }
 }
 
-/// Formats a list of expected values into a readable string for error messages
-/// @param {List | String} $items - Expected values; normalised to a list if a single value is passed
+/// Format $items into a readable string for error messages
+/// @param {List | String} $items - Expected values; a single value is normalized to a list
 /// @param {String | Number | Bool | Color | List | Null} $extra [null] - Additional value(s) appended after the main list
 /// @param {Number | Null} $limit [$EXPECTED_LIMIT] - Max items shown before truncating with a remaining count
 /// @param {String} $separator [$EXPECTED_SEPARATOR] - Separator placed between values
@@ -102,7 +104,7 @@ $EXPECTED_MORE_LABEL: 'more' !default;
     $items: l.push((), $items);
   }
 
-  // Truncate if needed
+  // Truncate to limit
   $count: list.length($items);
   @if $limit != null and $limit > 0 and $count > $limit {
     $visible: l.slice($items, 1, $limit);
@@ -110,7 +112,7 @@ $EXPECTED_MORE_LABEL: 'more' !default;
     $items: l.push($visible, '... #{$hidden} #{$EXPECTED_MORE_LABEL}');
   }
 
-  // Convert empty, whitespace, null, or lists to string representations
+  // Render each item for display
   $result: ();
   @each $item in $items {
     $result: l.push($result, received($item, $quote-empty: true));
