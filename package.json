@@ -1,6 +1,6 @@
 {
   "name": "sass-error",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Sass utility functions for building error messages — per the Error Message Specification",
   "keywords": [
     "sass",
