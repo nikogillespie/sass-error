@@ -52,6 +52,26 @@ All constants are configurable via `@use ... with (...)`:
 | `$EXPECTED_LIMIT`      | `5`      | Max values shown before truncating         |
 | `$EXPECTED_SEPARATOR`  | `' \| '` | Separator between values                   |
 | `$EXPECTED_MORE_LABEL` | `'more'` | Label for the remaining count              |
+| `$REPORT_MODE`         | `'warn'` | How `report()` reports: `warn` \| `error`  |
+
+### Report mode
+
+`$REPORT_MODE` controls whether [`e.report()`](#ereportmessage) prints a warning or fails the build:
+
+```scss
+@use 'sass-error' as e with (
+  $REPORT_MODE: 'error'
+);
+```
+
+| Value     | Behaviour                                                   |
+| --------- | ----------------------------------------------------------- |
+| `'warn'`  | `@warn` the message and return `null` — the build continues |
+| `'error'` | `@error` the message — the build fails                      |
+
+> **Note:** Any value other than `'error'` falls through to `'warn'`, so a typo (`'Error'`, `'eror'`) silently keeps the default.
+
+> **Note:** Sass only applies `with (...)` on the first load of a module. Configure `sass-error` before anything else in the build loads it unconfigured.
 
 ---
 
@@ -66,6 +86,7 @@ All constants are configurable via `@use ... with (...)`:
 | [`path`](#epathpath-is-id-error-separator)          | Builds a formatted path string from segments   |
 | [`received`](#ereceivedvalue-quote-empty)           | Renders a received value as a string           |
 | [`expected`](#eexpecteditems-extra-limit-separator) | Formats expected values into a readable string |
+| [`report`](#ereportmessage)                         | Reports a message as a warning or an error     |
 
 ---
 
@@ -126,6 +147,36 @@ Formats a list of expected values into a readable string for error messages.
 e.expected(('foo', 'bar', 'baz'))                       // → 'foo | bar | baz'
 e.expected(('a', 'b', 'c', 'd', 'e', 'f'), $limit: 3)   // → 'a | b | c | ... 3 more'
 e.expected(('foo', 'bar'), $extra: 'baz')               // → 'foo | bar | baz'
+```
+
+---
+
+### `e.report($message)`
+
+Reports a message as a `@warn` or an `@error`, depending on [`$REPORT_MODE`](#report-mode).
+
+| Parameter  | Type     | Default | Description             |
+| ---------- | -------- | ------- | ----------------------- |
+| `$message` | `String` |         | Formatted error message |
+
+**Returns** `Null` in `'warn'` mode. In `'error'` mode compilation halts and nothing is returned.
+
+In a function, return its result to bail out:
+
+```scss
+@if $error {
+  @return e.report($error);
+}
+```
+
+In a mixin, assign it to a throwaway variable — Sass doesn't allow a bare function call as a statement:
+
+```scss
+@if $error {
+  $_: e.report($error + ' [context: #{$origin}]');
+} @else {
+  // ... normal body
+}
 ```
 
 ---

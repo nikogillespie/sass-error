@@ -16,6 +16,9 @@ $EXPECTED_LIMIT: 5 !default; // Cap values shown in error messages
 $EXPECTED_SEPARATOR: ' | ' !default;
 $EXPECTED_MORE_LABEL: 'more' !default;
 
+// Report mode: warn | error
+$REPORT_MODE: 'warn' !default;
+
 // PUBLIC API ──────────────────────────────────────────────
 
 /// Build a formatted path string from $path for error messages
@@ -128,4 +131,16 @@ $EXPECTED_MORE_LABEL: 'more' !default;
   }
 
   @return l.join($result, $separator);
+}
+
+/// Report $message as a warning or a build-failing error, per $REPORT_MODE
+/// @param {String} $message - Formatted error message
+/// @return {Null} Returns `null` in `'warn'` mode; `'error'` mode halts compilation instead
+@function report($message) {
+  @if $REPORT_MODE == 'error' {
+    @error $message;
+  } @else {
+    @warn $message;
+    @return null;
+  }
 }
