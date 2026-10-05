@@ -44,23 +44,23 @@ All constants are configurable via `@use ... with (...)`:
 );
 ```
 
-| Variable               | Default  | Description                                |
-| ---------------------- | -------- | ------------------------------------------ |
-| `$PATH_PREFIX`         | `' @ '`  | Prefix before the path string              |
-| `$PATH_SEPARATOR`      | `' > '`  | Separator between path segments            |
-| `$PATH_ID_PLACEHOLDER` | `'<id>'` | Placeholder when the key itself is invalid |
-| `$EXPECTED_LIMIT`      | `5`      | Max values shown before truncating         |
-| `$EXPECTED_SEPARATOR`  | `' \| '` | Separator between values                   |
-| `$EXPECTED_MORE_LABEL` | `'more'` | Label for the remaining count              |
-| `$REPORT_MODE`         | `'warn'` | How `report()` reports: `warn` \| `error`  |
+| Variable                | Default  | Description                                |
+| ----------------------- | -------- | ------------------------------------------ |
+| `$PATH_PREFIX`          | `' @ '`  | Prefix before the path string              |
+| `$PATH_SEPARATOR`       | `' > '`  | Separator between path segments            |
+| `$PATH_ID_PLACEHOLDER`  | `'<id>'` | Placeholder when the key itself is invalid |
+| `$EXPECTED_LIMIT`       | `5`      | Max values shown before truncating         |
+| `$EXPECTED_SEPARATOR`   | `' \| '` | Separator between values                   |
+| `$EXPECTED_MORE_LABEL`  | `'more'` | Label for the remaining count              |
+| `$REPORT_MODE_SELECTED` | `'warn'` | How `report()` reports: `warn` \| `error`  |
 
 ### Report mode
 
-`$REPORT_MODE` controls whether [`e.report()`](#ereportmessage) prints a warning or fails the build:
+`$REPORT_MODE_SELECTED` controls whether [`e.report()`](#ereportmessage) prints a warning or fails the build:
 
 ```scss
 @use 'sass-error' as e with (
-  $REPORT_MODE: 'error'
+  $REPORT_MODE_SELECTED: 'error'
 );
 ```
 
@@ -69,7 +69,7 @@ All constants are configurable via `@use ... with (...)`:
 | `'warn'`  | `@warn` the message and return `null` — the build continues |
 | `'error'` | `@error` the message — the build fails                      |
 
-> **Note:** Any value other than `'error'` falls through to `'warn'`, so a typo (`'Error'`, `'eror'`) silently keeps the default.
+> **Note:** Any other value (a typo such as `'Error'` or `'eror'`) fails the build when `sass-error` loads.
 
 > **Note:** A module can only be configured on its first load. Packages such as [`sass-valid`](https://www.npmjs.com/package/sass-valid) load `sass-error` themselves, so place your `@use ... with (...)` before them.
 
@@ -153,7 +153,7 @@ e.expected(('foo', 'bar'), $extra: 'baz')               // → 'foo | bar | baz'
 
 ### `e.report($message)`
 
-Reports a message as a `@warn` or an `@error`, depending on [`$REPORT_MODE`](#report-mode).
+Reports a message as a `@warn` or an `@error`, depending on [`$REPORT_MODE_SELECTED`](#report-mode).
 
 | Parameter  | Type     | Default | Description             |
 | ---------- | -------- | ------- | ----------------------- |
