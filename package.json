@@ -27,8 +27,8 @@
   },
   "peerDependencies": {
     "sass-funcs": ">=1.0.0",
-    "sass": ">=1.33.0",
-    "sass-embedded": ">=1.33.0"
+    "sass": ">=1.45.0",
+    "sass-embedded": ">=1.45.0"
   },
   "peerDependenciesMeta": {
     "sass": {

@@ -28,7 +28,7 @@ As defined by the specification, every error message is a single structured stri
 npm install sass-error sass-funcs
 ```
 
-> Requires [`sass`](https://www.npmjs.com/package/sass) or [`sass-embedded`](https://www.npmjs.com/package/sass-embedded) `>= 1.33.0` — install one, not both (`sass-embedded` recommended). Also requires [`sass-funcs`](https://www.npmjs.com/package/sass-funcs).
+> Requires [`sass`](https://www.npmjs.com/package/sass) or [`sass-embedded`](https://www.npmjs.com/package/sass-embedded) `>= 1.45.0` — install one, not both (`sass-embedded` recommended). Also requires [`sass-funcs`](https://www.npmjs.com/package/sass-funcs).
 
 ---
 
@@ -71,7 +71,7 @@ All constants are configurable via `@use ... with (...)`:
 
 > **Note:** Any value other than `'error'` falls through to `'warn'`, so a typo (`'Error'`, `'eror'`) silently keeps the default.
 
-> **Note:** Sass only applies `with (...)` on the first load of a module. Configure `sass-error` before anything else in the build loads it unconfigured.
+> **Note:** A module can only be configured on its first load. Packages such as [`sass-valid`](https://www.npmjs.com/package/sass-valid) load `sass-error` themselves, so place your `@use ... with (...)` before them.
 
 ---
 
@@ -182,6 +182,10 @@ In a mixin, assign it to a throwaway variable — Sass doesn't allow a bare func
 ---
 
 ## Migration
+
+### v2.0 → v2.1
+
+- Minimum `sass` / `sass-embedded` version raised from `1.33.0` to `1.45.0`
 
 ### v1 → v2
 
