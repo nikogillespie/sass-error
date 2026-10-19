@@ -18,13 +18,13 @@ $EXPECTED_SEPARATOR: ' | ' !default;
 $EXPECTED_MORE_LABEL: 'more' !default;
 
 // Report mode: warn | error
-$REPORT_MODE_SELECTED: 'warn' !default;
+$REPORT_MODE: 'warn' !default;
 
 // GUARDS ──────────────────────────────────────────────────
 
 // Guard report mode
-@if not l.includes(('warn', 'error'), $REPORT_MODE_SELECTED) {
-  @error 'sass-error: #{meta.inspect($REPORT_MODE_SELECTED)} is not a valid report mode.';
+@if not l.includes(('warn', 'error'), $REPORT_MODE) {
+  @error 'sass-error: #{meta.inspect($REPORT_MODE)} is not a valid report mode.';
 }
 
 // PUBLIC API ──────────────────────────────────────────────
@@ -141,11 +141,11 @@ $REPORT_MODE_SELECTED: 'warn' !default;
   @return l.join($result, $separator);
 }
 
-/// Report $message as a warning or a build-failing error, per $REPORT_MODE_SELECTED
+/// Report $message as a warning or a build-failing error, per $REPORT_MODE
 /// @param {String} $message - Formatted error message
 /// @return {Null} Returns `null` in `'warn'` mode; `'error'` mode halts compilation instead
 @function report($message) {
-  @if $REPORT_MODE_SELECTED == 'error' {
+  @if $REPORT_MODE == 'error' {
     @error string.unquote($message);
   } @else {
     @warn $message;

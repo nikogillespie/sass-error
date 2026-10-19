@@ -52,15 +52,15 @@ All constants are configurable via `@use ... with (...)`:
 | `$EXPECTED_LIMIT`       | `5`      | Max values shown before truncating         |
 | `$EXPECTED_SEPARATOR`   | `' \| '` | Separator between values                   |
 | `$EXPECTED_MORE_LABEL`  | `'more'` | Label for the remaining count              |
-| `$REPORT_MODE_SELECTED` | `'warn'` | How `report()` reports: `warn` \| `error`  |
+| `$REPORT_MODE`          | `'warn'` | How `report()` reports: `warn` \| `error`  |
 
 ### Report mode
 
-`$REPORT_MODE_SELECTED` controls whether [`e.report()`](#ereportmessage) prints a warning or fails the build:
+`$REPORT_MODE` controls whether [`e.report()`](#ereportmessage) prints a warning or fails the build:
 
 ```scss
 @use 'sass-error' as e with (
-  $REPORT_MODE_SELECTED: 'error'
+  $REPORT_MODE: 'error'
 );
 ```
 
@@ -153,7 +153,7 @@ e.expected(('foo', 'bar'), $extra: 'baz')               // → 'foo | bar | baz'
 
 ### `e.report($message)`
 
-Reports a message as a `@warn` or an `@error`, depending on [`$REPORT_MODE_SELECTED`](#report-mode).
+Reports a message as a `@warn` or an `@error`, depending on [`$REPORT_MODE`](#report-mode).
 
 | Parameter  | Type     | Default | Description             |
 | ---------- | -------- | ------- | ----------------------- |
