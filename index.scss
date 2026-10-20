@@ -13,7 +13,7 @@ $PATH_SEPARATOR: ' > ' !default;
 $PATH_ID_PLACEHOLDER: '<id>' !default;
 
 // Expected formatting
-$EXPECTED_LIMIT: 5 !default; // Cap values shown in error messages
+$EXPECTED_LIMIT: 5 !default; // The most values a message lists
 $EXPECTED_SEPARATOR: ' | ' !default;
 $EXPECTED_MORE_LABEL: 'more' !default;
 
@@ -22,18 +22,17 @@ $REPORT_MODE: 'warn' !default;
 
 // GUARDS ──────────────────────────────────────────────────
 
-// Guard report mode
 @if not l.includes(('warn', 'error'), $REPORT_MODE) {
   @error 'sass-error: #{meta.inspect($REPORT_MODE)} is not a valid report mode.';
 }
 
 // PUBLIC API ──────────────────────────────────────────────
 
-/// Build a formatted path string from $path for error messages
-/// @param {List | String} $path - Path segments; a single value is normalized to a list
-/// @param {Bool} $is-id-error [false] - Replace the last segment with `<id>` when true
-/// @param {String} $separator [$PATH_SEPARATOR] - Separator placed between path segments
-/// @return {String} Path string prefixed with `$PATH_PREFIX`, or `''` if $path is empty
+/// Build a message's path from $path
+/// @param {List | String} $path - The segments, or one
+/// @param {Bool} $is-id-error [false] - Show the last segment as `<id>`
+/// @param {String} $separator [$PATH_SEPARATOR] - Between segments
+/// @return {String} The path after `$PATH_PREFIX`, or `''` for none
 @function path($path, $is-id-error: false, $separator: $PATH_SEPARATOR) {
   @if m.type-of($is-id-error) != 'bool' {
     @error '$is-id-error: #{meta.inspect($is-id-error)} is not a bool.';
@@ -41,17 +40,18 @@ $REPORT_MODE: 'warn' !default;
     @error '$separator: #{meta.inspect($separator)} is not a string.';
   }
 
-  // Normalize to list
   @if not m.is-type($path, ('list', 'arglist')) {
+    // values → (values)
     $path: l.push((), $path);
   }
 
-  // Replace the last segment with the ID placeholder
   @if $is-id-error and list.length($path) > 0 {
+    // (values, 3) → (values, <id>)
     $parent-path: l.slice($path, 1, list.length($path) - 1);
     $path: l.push($parent-path, $PATH_ID_PLACEHOLDER);
   }
 
+  // (values, card) → ' @ values > card'
   $path-string: l.join($path, $separator);
   @if $path-string == '' {
     @return '';
@@ -60,47 +60,41 @@ $REPORT_MODE: 'warn' !default;
   }
 }
 
-/// Render $value as a string for error messages
-/// @param {*} $value - Value to render
-/// @param {Bool} $quote-empty [false] - Quote empty or whitespace-only strings when true
-/// @return {String} Strings returned as-is, non-empty lists wrapped in parens, all others inspected
+/// Show $value as a message does
+/// @param {*} $value - The value
+/// @param {Bool} $quote-empty [false] - Quote an empty or blank string
+/// @return {String} A string as it is, a list in parentheses, anything else inspected
 @function received($value, $quote-empty: false) {
   $type: m.type-of($value);
 
   @if $type == 'string' {
     @if $quote-empty and s.trim($value) == '' {
+      // '' → ""
       @return '"#{$value}"';
     } @else {
       @return $value;
     }
-  } @else if m.is-type($value, ('list', 'arglist')) and list.length($value) > 0
-  {
+  } @else if m.is-type($value, ('list', 'arglist')) and list.length($value) > 0 {
+    // a b → (a b)
     @return '(#{meta.inspect($value)})';
   } @else {
     @return meta.inspect($value);
   }
 }
 
-/// Format $items into a readable string for error messages
-/// @param {List | String} $items - Expected values; a single value is normalized to a list
-/// @param {String | Number | Bool | Color | List | Null} $extra [null] - Additional value(s) appended after the main list
-/// @param {Number | Null} $limit [$EXPECTED_LIMIT] - Max items shown before truncating with a remaining count
-/// @param {String} $separator [$EXPECTED_SEPARATOR] - Separator placed between values
-/// @return {String} Joined expected string, truncated to `$limit` items if the count is exceeded
+/// Build a message's list of expected values from $items
+/// @param {List | String} $items - The values, or one
+/// @param {String | Number | Bool | Color | List | Null} $extra [null] - Added after the cut
+/// @param {Number | Null} $limit [$EXPECTED_LIMIT] - The most shown; null for all
+/// @param {String} $separator [$EXPECTED_SEPARATOR] - Between values
+/// @return {String} The values, joined
 @function expected(
   $items,
   $extra: null,
   $limit: $EXPECTED_LIMIT,
   $separator: $EXPECTED_SEPARATOR
 ) {
-  $allowed-extra-types: (
-    'string',
-    'number',
-    'bool',
-    'color',
-    'list',
-    'arglist'
-  );
+  $allowed-extra-types: ('string', 'number', 'bool', 'color', 'list', 'arglist');
 
   @if $extra != null and not m.is-type($extra, $allowed-extra-types) {
     @error '$extra: #{meta.inspect($extra)} is not a string, number, bool, color, or list.';
@@ -110,26 +104,25 @@ $REPORT_MODE: 'warn' !default;
     @error '$separator: #{meta.inspect($separator)} is not a string.';
   }
 
-  // Normalize to list
   @if not m.is-type($items, ('list', 'arglist')) {
+    // a → (a)
     $items: l.push((), $items);
   }
 
-  // Truncate to limit
   $count: list.length($items);
   @if $limit != null and $limit > 0 and $count > $limit {
+    // (a, b, c, d, e, f, g), limit 5 → (a, b, c, d, e, ... 2 more)
     $visible: l.slice($items, 1, $limit);
     $hidden: $count - $limit;
     $items: l.push($visible, '... #{$hidden} #{$EXPECTED_MORE_LABEL}');
   }
 
-  // Render each item for display
+  // ('', a) → ("", a)
   $result: ();
   @each $item in $items {
     $result: l.push($result, received($item, $quote-empty: true));
   }
 
-  // Append extra values if provided
   @if $extra != null {
     @if m.is-type($extra, ('list', 'arglist')) {
       $result: l.concat($result, $extra);
@@ -138,12 +131,13 @@ $REPORT_MODE: 'warn' !default;
     }
   }
 
+  // (a, b) → 'a | b'
   @return l.join($result, $separator);
 }
 
-/// Report $message as a warning or a build-failing error, per $REPORT_MODE
-/// @param {String} $message - Formatted error message
-/// @return {Null} Returns `null` in `'warn'` mode; `'error'` mode halts compilation instead
+/// Report $message as a warning, or as an error that stops the build, per $REPORT_MODE
+/// @param {String} $message - The message
+/// @return {Null} null in `'warn'` mode; `'error'` mode stops the build instead
 @function report($message) {
   @if $REPORT_MODE == 'error' {
     @error string.unquote($message);
