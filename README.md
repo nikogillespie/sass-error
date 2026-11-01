@@ -64,10 +64,10 @@ All constants are configurable via `@use ... with (...)`:
 );
 ```
 
-| Value     | Behaviour                                                   |
-| --------- | ----------------------------------------------------------- |
-| `'warn'`  | `@warn` the message and return `null` — the build continues |
-| `'error'` | `@error` the message — the build fails                      |
+| Value     | Behaviour                                                        |
+| --------- | ---------------------------------------------------------------- |
+| `'warn'`  | `@warn` the message once and return `null` — the build continues |
+| `'error'` | `@error` the message — the build fails                           |
 
 > **Note:** Any other value (a typo such as `'Error'` or `'eror'`) fails the build when `sass-error` loads.
 
@@ -154,6 +154,9 @@ e.expected(('foo', 'bar'), $extra: 'baz')               // → 'foo | bar | baz'
 ### `e.report($message)`
 
 Reports a message as a `@warn` or an `@error`, depending on [`$REPORT_MODE`](#report-mode).
+
+In `'warn'` mode each message prints once per compile: a later call with the same text returns `null` without
+printing, so one broken input read from many places shows one warning, not one per call.
 
 | Parameter  | Type     | Default | Description             |
 | ---------- | -------- | ------- | ----------------------- |

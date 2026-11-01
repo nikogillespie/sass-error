@@ -1,5 +1,6 @@
 @use 'sass:meta';
 @use 'sass:list';
+@use 'sass:map';
 @use 'sass:string';
 @use 'sass-funcs/meta' as m;
 @use 'sass-funcs/list' as l;
@@ -19,6 +20,7 @@ $EXPECTED_MORE_LABEL: 'more' !default;
 
 // Report mode: warn | error
 $REPORT_MODE: 'warn' !default;
+$_REPORT_LOG: (); // Each message printed, kept by its text
 
 // GUARDS ──────────────────────────────────────────────────
 
@@ -135,13 +137,16 @@ $REPORT_MODE: 'warn' !default;
   @return l.join($result, $separator);
 }
 
-/// Report $message as a warning, or as an error that stops the build, per $REPORT_MODE
+/// Report $message once, as a warning or as an error that stops the build, per $REPORT_MODE
 /// @param {String} $message - The message
 /// @return {Null} null in `'warn'` mode; `'error'` mode stops the build instead
 @function report($message) {
   @if $REPORT_MODE == 'error' {
     @error string.unquote($message);
+  } @else if map.has-key($_REPORT_LOG, $message) {
+    @return null;
   } @else {
+    $_REPORT_LOG: map.set($_REPORT_LOG, $message, true) !global;
     @warn $message;
     @return null;
   }
