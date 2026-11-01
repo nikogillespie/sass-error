@@ -20,6 +20,7 @@ $EXPECTED_MORE_LABEL: 'more' !default;
 
 // Report mode: warn | error
 $REPORT_MODE: 'warn' !default;
+
 $_REPORT_LOG: (); // Each message printed, kept by its text
 
 // GUARDS ──────────────────────────────────────────────────
