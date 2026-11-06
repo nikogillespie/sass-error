@@ -26,7 +26,7 @@ $_REPORT_LOG: (); // Each message printed, kept by its text
 // GUARDS ──────────────────────────────────────────────────
 
 @if not l.includes(('warn', 'error'), $REPORT_MODE) {
-  @error 'sass-error: #{meta.inspect($REPORT_MODE)} is not a valid report mode.';
+  @error 'sass-error: #{meta.inspect($REPORT_MODE)} is not a valid report mode for $REPORT_MODE.';
 }
 
 // PUBLIC API ──────────────────────────────────────────────
