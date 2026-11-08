@@ -1,6 +1,6 @@
 # sass-error
 
-Sass utility functions for building error messages — per the [Error Message Specification](https://github.com/nikogillespie/sass-error-spec).
+Sass utility functions for building error messages — per the [Error Message Specification](SPEC.md).
 
 ---
 
@@ -18,7 +18,7 @@ As defined by the specification, every error message is a single structured stri
 [TOKEN_TIER_VALUE] Token "font-weight" @ settings > tier: Invalid value "random" → Allowed: primitive | semantic | component
 ```
 
-> **Note:** See the **[Error Message Specification](https://github.com/nikogillespie/sass-error-spec)** for a step-by-step guide on how to construct error messages.
+> **Note:** See the **[Error Message Specification](SPEC.md)** for a step-by-step guide on how to construct error messages.
 
 ---
 

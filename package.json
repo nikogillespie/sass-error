@@ -19,7 +19,8 @@
   },
   "files": [
     "index.scss",
-    "README.md"
+    "README.md",
+    "SPEC.md"
   ],
   "repository": {
     "type": "git",
